@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import MovieTableRow from "./MovieTableRow";
 import Loader from "../Loader";
 import {
@@ -84,14 +84,14 @@ const MoviesTable = ({ movie }) => {
     handleHeaderClick,
     handleGenderFilterClick
   } = useFetchMovieCharacters(movie);
-  
+
   if (errorText) {
     return <p>{errorText}</p>;
   } else if (loading) {
     return <Loader />;
   } else if (!loading && characters.length === 0) {
     return <p>No Characters available</p>;
-  } else {
+  } else if (!loading && characters.length > 0) {
     return (
       <section className="wrapper">
         {
@@ -112,6 +112,8 @@ const MoviesTable = ({ movie }) => {
         }
       </section>
     );
+  } else {
+    return null;
   }
 };
 
