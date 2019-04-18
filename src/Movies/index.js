@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import MovieSelectOptions from "./MovieSelectOptions";
 import SelectedMovie from "./SelectedMovie";
 import Loader from "../Loader";
@@ -20,13 +21,9 @@ const Movies = () => {
     const fetchMovies = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${baseUrl}/films`);
-        if (response.status !== 200) {
-          throw new Error("Failed to load movies");
-        }
-        const unsortedMovies = await response.json();
+        const response = await axios.get(`${baseUrl}/films`);
         setMovies(
-          unsortedMovies.results.sort((a, b) =>
+          response.data.results.sort((a, b) =>
             sortFunctionAsc(a, b, "release_date")
           )
         );

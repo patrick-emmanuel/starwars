@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import MovieTableRow from "./MovieTableRow";
 import Loader from "../Loader";
 import {
@@ -43,18 +44,15 @@ const useFetchMovieCharacters = movie => {
         updateCharacters(cache.get(movie.title));
         return;
       }
-      const updatedCharacters = [];
+      let updatedCharacters = [];
       try {
         setLoading(true);
-        for (let characterUrl of characters) {
+        const valuesToFetch = characters.map(characterUrl => {
           const url = `${baseUrl}/${characterUrl.slice(21)}/`;
-          const response = await fetch(url);
-          if (response.status !== 200) {
-            throw new Error("Failed to load characters");
-          }
-          const character = await response.json();
-          updatedCharacters.push(character);
-        }
+          return axios.get(url);
+        });
+        const resolvedAjaxRequest = await Promise.all(valuesToFetch);
+        updatedCharacters = resolvedAjaxRequest.map(response => response.data);
       } catch (error) {
         setLoading(false);
         setErrorText(error.message);
