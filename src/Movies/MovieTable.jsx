@@ -8,7 +8,7 @@ import {
   convertMapToArray
 } from "../utils";
 
-const useFetchMovieCharacter = movie => {
+const useFetchMovieCharacters = movie => {
   const [errorText, setErrorText] = useState("");
   const [allCharacters, setAllCharacters] = useState([]);
   const [characters, setCharacters] = useState([]);
@@ -85,7 +85,7 @@ const MoviesTable = ({ movie }) => {
     characters,
     handleHeaderClick,
     handleGenderFilterClick
-  } = useFetchMovieCharacter(movie);
+  } = useFetchMovieCharacters(movie);
   
   if (errorText) {
     return <p>{errorText}</p>;
