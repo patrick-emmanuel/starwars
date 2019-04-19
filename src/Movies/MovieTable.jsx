@@ -45,12 +45,12 @@ const useFetchMovieCharacters = movie => {
         return;
       }
       let updatedCharacters = [];
+      const valuesToFetch = characters.map(characterUrl => {
+        const url = `${baseUrl}/${characterUrl.slice(21)}/`;
+        return axios.get(url);
+      });
       try {
         setLoading(true);
-        const valuesToFetch = characters.map(characterUrl => {
-          const url = `${baseUrl}/${characterUrl.slice(21)}/`;
-          return axios.get(url);
-        });
         const resolvedAjaxRequest = await Promise.all(valuesToFetch);
         updatedCharacters = resolvedAjaxRequest.map(response => response.data);
       } catch (error) {
