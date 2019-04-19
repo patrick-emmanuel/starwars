@@ -1,4 +1,5 @@
 export const baseUrl = "https://cors-anywhere.herokuapp.com/swapi.co/api";
+
 export const sortFunctionAsc = (a, b, value) => {
   if (a[value] < b[value]) {
     return -1;

@@ -30,6 +30,7 @@ const Movies = () => {
         setLoading(false);
       } catch (error) {
         setErrorText(error.message);
+        setLoading(false);
       }
     };
     fetchMovies();
@@ -45,9 +46,9 @@ const Movies = () => {
             handleMoviesChange={handleChange}
             movies={movies}
           />
-        ) : (
+        ) : loading ? (
           <Loader />
-        )}
+        ) : null}
         {selectedMovie && <SelectedMovie selectedMovie={selectedMovie} />}
       </div>
     );
