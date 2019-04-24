@@ -41,8 +41,9 @@ const useFetchMovieCharacters = movie => {
   useEffect(() => {
     const fetchCharacters = async characters => {
       setLoading(true);
-      if (cache.has(movie.title)) {
-        updateCharacters(cache.get(movie.title));
+      const movieTitle = movie.title;
+      if (cache.has(movieTitle)) {
+        updateCharacters(cache.get(movieTitle));
         return;
       }
       let updatedCharacters = [];
@@ -58,7 +59,7 @@ const useFetchMovieCharacters = movie => {
         setErrorText(error.message);
       }
       const currentCacheEntries = convertMapToArray(cache);
-      currentCacheEntries.push([movie.title, updatedCharacters]);
+      currentCacheEntries.push([movieTitle, updatedCharacters]);
       setCache(new Map(currentCacheEntries));
       updateCharacters(updatedCharacters);
     };
