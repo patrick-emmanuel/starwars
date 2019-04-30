@@ -1,4 +1,5 @@
 import React from "react";
+import { useSpring, animated } from "react-spring";
 import CharacterTableRow from "./CharacterTableRow";
 import Loader from "../Loader";
 import useFetchMovieCharacters from "./customHooks";
@@ -11,14 +12,14 @@ const CharactersTable = ({ movie }) => {
     handleHeaderClick,
     handleGenderFilterClick
   } = useFetchMovieCharacters(movie);
-
+  const props = useSpring({ opacity: 1, from: { opacity: 0 } });
   if (charactersError) {
     return <p>{charactersError}</p>;
   } else if (charactersLoading) {
     return <Loader />;
   } else if (!charactersLoading && characters.length > 0) {
     return (
-      <section className="wrapper">
+      <animated.section style={props} className="wrapper">
         <div className="wrapper">
           <select onClick={handleGenderFilterClick}>
             <option value="all">All</option>
@@ -33,7 +34,7 @@ const CharactersTable = ({ movie }) => {
             />
           </table>
         </div>
-      </section>
+      </animated.section>
     );
   } else {
     return null;

@@ -8,7 +8,8 @@
     "axios": "^0.18.0",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "react-spring": "^8.0.19"
   },
   "devDependencies": {},
   "scripts": {
