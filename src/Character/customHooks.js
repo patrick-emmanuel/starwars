@@ -1,6 +1,12 @@
 import { useEffect } from "react";
 import axios from "axios";
-import { sortCharacters, baseUrl, filterCharacters } from "../utils";
+import {
+  sortCharacters,
+  baseUrl,
+  filterCharacters,
+  retrieveCacheValues,
+  cacheValues
+} from "../utils";
 import { useCharacterState } from "./store";
 
 const useFetchMovieCharacters = movie => {
@@ -44,6 +50,11 @@ const useFetchMovieCharacters = movie => {
   useEffect(() => {
     const fetchCharacters = async characters => {
       setCharactersLoading(true);
+      const cachedCharacters = retrieveCacheValues(movie.title);
+      if (cachedCharacters) {
+        updateCharacters(cachedCharacters);
+        return;
+      }
       let updatedCharacters = [];
       try {
         const valuesToFetch = characters.map(characterUrl => {
@@ -56,6 +67,7 @@ const useFetchMovieCharacters = movie => {
         setCharactersError(error.message);
         setCharactersLoading(false);
       }
+      cacheValues(movie.title, updatedCharacters);
       updateCharacters(updatedCharacters);
     };
 
