@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import MovieSelectOptions from "./MovieSelectOptions";
 import SelectedMovie from "./SelectedMovie";
 import Loader from "../Loader";
 import { sortFunctionAsc, baseUrl } from "../utils";
+import { useAppState } from "../App/store";
 
 const Movies = () => {
-  const [movies, setMovies] = useState(null);
-  const [errorText, setErrorText] = useState(null);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    state,
+    setMovies,
+    setSelectedMovie,
+    setMovieLoading,
+    setMovieError
+  } = useAppState();
+
+  const { movieLoading, movieError, movies, selectedMovie } = state;
 
   const handleChange = e => {
     e.preventDefault();
@@ -20,33 +26,34 @@ const Movies = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        setLoading(true);
+        setMovieLoading(true);
+        setMovieError("");
         const response = await axios.get(`${baseUrl}/films`);
         setMovies(
           response.data.results.sort((a, b) =>
             sortFunctionAsc(a, b, "release_date")
           )
         );
-        setLoading(false);
+        setMovieLoading(false);
       } catch (error) {
-        setErrorText(error.message);
-        setLoading(false);
+        setMovieError(error.message);
+        setMovieLoading(false);
       }
     };
     fetchMovies();
   }, []);
 
-  if (errorText) {
-    return <p style={{ color: "white" }}>{errorText}</p>;
+  if (movieError) {
+    return <p style={{ color: "white" }}>{movieError}</p>;
   } else {
     return (
       <div className="wrapper page">
-        {movies && !loading ? (
+        {movies && !movieLoading ? (
           <MovieSelectOptions
             handleMoviesChange={handleChange}
             movies={movies}
           />
-        ) : loading ? (
+        ) : movieLoading ? (
           <Loader />
         ) : null}
         {selectedMovie && <SelectedMovie selectedMovie={selectedMovie} />}
