@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import MovieTableRow from "./MovieTableRow";
+import CharacterTableRow from "./CharacterTableRow";
 import Loader from "../Loader";
 import { sortCharacters, baseUrl, filterCharacters } from "../utils";
-import { useAppState } from "../App/store";
+import { useCharacterState } from "./store";
 
 const useFetchMovieCharacters = movie => {
   const {
@@ -13,7 +13,7 @@ const useFetchMovieCharacters = movie => {
     setSortAscending,
     setCharactersLoading,
     setCharactersError
-  } = useAppState();
+  } = useCharacterState();
   const {
     charactersLoading,
     charactersError,
@@ -40,6 +40,7 @@ const useFetchMovieCharacters = movie => {
   const updateCharacters = updatedCharacters => {
     setCharacters(updatedCharacters);
     setAllCharacters(updatedCharacters);
+    setCharactersLoading(false);
   };
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const useFetchMovieCharacters = movie => {
       let updatedCharacters = [];
       try {
         const valuesToFetch = characters.map(characterUrl => {
-          const url = `${baseUrl}/${characterUrl.slice(21)}/`;
+          const url = `${baseUrl}/${characterUrl.slice(21)}`;
           return axios.get(url);
         });
         const resolvedAjaxRequest = await Promise.all(valuesToFetch);
@@ -72,7 +73,7 @@ const useFetchMovieCharacters = movie => {
   };
 };
 
-const MoviesTable = ({ movie }) => {
+const CharactersTable = ({ movie }) => {
   const {
     charactersLoading,
     charactersError,
@@ -95,7 +96,7 @@ const MoviesTable = ({ movie }) => {
             <option value="female">F</option>
           </select>
           <table>
-            <MovieTableRow
+            <CharacterTableRow
               characters={characters}
               handleHeaderClick={handleHeaderClick}
               handleGenderFilterClick={handleGenderFilterClick}
@@ -109,4 +110,4 @@ const MoviesTable = ({ movie }) => {
   }
 };
 
-export default MoviesTable;
+export default CharactersTable;

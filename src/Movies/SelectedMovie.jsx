@@ -1,11 +1,11 @@
 import React from "react";
 import OpeningCrawl from "./OpeningCrawl";
-import MoviesTable from "./MovieTable";
+import CharacterTable from "../Character";
 
 const SelectedMovie = ({ selectedMovie }) => (
   <div className="wrapper">
     <OpeningCrawl movie={selectedMovie} />
-    <MoviesTable movie={selectedMovie} />
+    <CharacterTable movie={selectedMovie} />
   </div>
 );
 

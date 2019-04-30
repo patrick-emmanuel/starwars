@@ -1,6 +1,6 @@
 import React from "react";
 
-const MovieTableHeader = ({ handleHeaderClick }) => (
+const CharacterTableHeader = ({ handleHeaderClick }) => (
   <thead>
     <tr>
       <th data-name="name" onClick={handleHeaderClick}>
@@ -16,4 +16,4 @@ const MovieTableHeader = ({ handleHeaderClick }) => (
   </thead>
 );
 
-export default MovieTableHeader;
+export default CharacterTableHeader;

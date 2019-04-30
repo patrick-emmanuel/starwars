@@ -4,7 +4,7 @@ import MovieSelectOptions from "./MovieSelectOptions";
 import SelectedMovie from "./SelectedMovie";
 import Loader from "../Loader";
 import { sortFunctionAsc, baseUrl } from "../utils";
-import { useAppState } from "../App/store";
+import { useMovieState } from "./store";
 
 const Movies = () => {
   const {
@@ -13,7 +13,7 @@ const Movies = () => {
     setSelectedMovie,
     setMovieLoading,
     setMovieError
-  } = useAppState();
+  } = useMovieState();
 
   const { movieLoading, movieError, movies, selectedMovie } = state;
 
