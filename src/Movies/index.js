@@ -3,7 +3,12 @@ import axios from "axios";
 import MovieSelectOptions from "./MovieSelectOptions";
 import SelectedMovie from "./SelectedMovie";
 import Loader from "../Loader";
-import { sortFunctionAsc, baseUrl } from "../utils";
+import {
+  sortFunctionAsc,
+  baseUrl,
+  retrieveCacheValues,
+  cacheValues
+} from "../utils";
 import { useMovieState } from "./store";
 
 const Movies = () => {
@@ -25,20 +30,27 @@ const Movies = () => {
 
   useEffect(() => {
     const fetchMovies = async () => {
+      const key = "movies";
+      const cachedMovies = retrieveCacheValues(key);
+      if (cachedMovies) {
+        setMovies(cachedMovies);
+        return;
+      }
+      let movies = [];
       try {
         setMovieLoading(true);
         setMovieError("");
         const response = await axios.get(`${baseUrl}/films`);
-        setMovies(
-          response.data.results.sort((a, b) =>
-            sortFunctionAsc(a, b, "release_date")
-          )
+        movies = response.data.results.sort((a, b) =>
+          sortFunctionAsc(a, b, "release_date")
         );
         setMovieLoading(false);
       } catch (error) {
         setMovieError(error.message);
         setMovieLoading(false);
       }
+      cacheValues(key, movies);
+      setMovies(movies);
     };
     fetchMovies();
   }, []);
