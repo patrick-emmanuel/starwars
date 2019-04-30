@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import MovieTableRow from "./MovieTableRow";
 import Loader from "../Loader";
-import {
-  sortCharacters,
-  baseUrl,
-  filterCharacters,
-  convertMapToArray
-} from "../utils";
+import { sortCharacters, baseUrl, filterCharacters } from "../utils";
+import { useAppState } from "../App/store";
 
 const useFetchMovieCharacters = movie => {
-  const [errorText, setErrorText] = useState("");
-  const [allCharacters, setAllCharacters] = useState([]);
-  const [characters, setCharacters] = useState([]);
-  const [sortAscending, setSortAscending] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [cache, setCache] = useState(new Map());
+  const {
+    state,
+    setAllCharacters,
+    setCharacters,
+    setSortAscending,
+    setCharactersLoading,
+    setCharactersError
+  } = useAppState();
+  const {
+    charactersLoading,
+    charactersError,
+    characters,
+    sortAscending,
+    allCharacters
+  } = state;
 
   const handleHeaderClick = e => {
     e.preventDefault();
@@ -35,17 +40,11 @@ const useFetchMovieCharacters = movie => {
   const updateCharacters = updatedCharacters => {
     setCharacters(updatedCharacters);
     setAllCharacters(updatedCharacters);
-    setLoading(false);
   };
 
   useEffect(() => {
     const fetchCharacters = async characters => {
-      setLoading(true);
-      const movieTitle = movie.title;
-      if (cache.has(movieTitle)) {
-        updateCharacters(cache.get(movieTitle));
-        return;
-      }
+      setCharactersLoading(true);
       let updatedCharacters = [];
       try {
         const valuesToFetch = characters.map(characterUrl => {
@@ -55,23 +54,19 @@ const useFetchMovieCharacters = movie => {
         const resolvedAjaxRequest = await Promise.all(valuesToFetch);
         updatedCharacters = resolvedAjaxRequest.map(response => response.data);
       } catch (error) {
-        setLoading(false);
-        setErrorText(error.message);
+        setCharactersError(error.message);
+        setCharactersLoading(false);
       }
-      const currentCacheEntries = convertMapToArray(cache);
-      currentCacheEntries.push([movieTitle, updatedCharacters]);
-      setCache(new Map(currentCacheEntries));
       updateCharacters(updatedCharacters);
     };
 
     fetchCharacters(movie.characters);
-  }, [movie, cache]);
+  }, [movie]);
 
   return {
-    loading,
-    errorText,
+    charactersLoading,
+    charactersError,
     characters,
-    sortAscending,
     handleHeaderClick,
     handleGenderFilterClick
   };
@@ -79,18 +74,18 @@ const useFetchMovieCharacters = movie => {
 
 const MoviesTable = ({ movie }) => {
   const {
-    loading,
-    errorText,
+    charactersLoading,
+    charactersError,
     characters,
     handleHeaderClick,
     handleGenderFilterClick
   } = useFetchMovieCharacters(movie);
 
-  if (errorText) {
-    return <p>{errorText}</p>;
-  } else if (loading) {
+  if (charactersError) {
+    return <p>{charactersError}</p>;
+  } else if (charactersLoading) {
     return <Loader />;
-  } else if (!loading && characters.length > 0) {
+  } else if (!charactersLoading && characters.length > 0) {
     return (
       <section className="wrapper">
         <div className="wrapper">
