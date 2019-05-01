@@ -8,16 +8,10 @@ import {
   cacheValues
 } from "../utils";
 import { useCharacterState } from "./store";
+import { actions } from "./actions";
 
 const useFetchMovieCharacters = movie => {
-  const {
-    state,
-    setAllCharacters,
-    setCharacters,
-    setSortAscending,
-    setCharactersLoading,
-    setCharactersError
-  } = useCharacterState();
+  const { state, dispatch } = useCharacterState();
   const {
     charactersLoading,
     charactersError,
@@ -30,26 +24,26 @@ const useFetchMovieCharacters = movie => {
     e.preventDefault();
     const value = e.target.dataset.name;
     const sortedCharacters = sortCharacters(characters, sortAscending, value);
-    setCharacters(sortedCharacters);
-    setSortAscending(!sortAscending);
+    dispatch({ type: actions.CHARACTERS, payload: sortedCharacters });
+    dispatch({ type: actions.SORT_ASC });
   };
 
   const handleGenderFilterClick = e => {
     e.preventDefault();
     const value = e.target.value;
     const filteredCharacters = filterCharacters(value, allCharacters);
-    setCharacters(filteredCharacters);
+    dispatch({ type: actions.CHARACTERS, payload: filteredCharacters });
   };
 
   const updateCharacters = updatedCharacters => {
-    setCharacters(updatedCharacters);
-    setAllCharacters(updatedCharacters);
-    setCharactersLoading(false);
+    dispatch({ type: actions.CHARACTERS, payload: updatedCharacters });
+    dispatch({ type: actions.ALL_CHARACTERS, payload: updatedCharacters });
+    dispatch({ type: actions.CHARACTERS_LOADING, payload: false });
   };
 
   useEffect(() => {
     const fetchCharacters = async characters => {
-      setCharactersLoading(true);
+      dispatch({ type: actions.CHARACTERS_LOADING, payload: true });
       const cachedCharacters = retrieveCacheValues(movie.title);
       if (cachedCharacters) {
         updateCharacters(cachedCharacters);
@@ -64,15 +58,15 @@ const useFetchMovieCharacters = movie => {
         const resolvedAjaxRequest = await Promise.all(valuesToFetch);
         updatedCharacters = resolvedAjaxRequest.map(response => response.data);
       } catch (error) {
-        setCharactersError(error.message);
-        setCharactersLoading(false);
+        dispatch({ type: actions.CHARACTERS_ERROR, payload: error.message });
+        dispatch({ type: actions.CHARACTERS_LOADING, payload: true });
       }
       cacheValues(movie.title, updatedCharacters);
       updateCharacters(updatedCharacters);
     };
 
     fetchCharacters(movie.characters);
-  }, [movie]);
+  }, [movie, dispatch]);
 
   return {
     charactersLoading,

@@ -1,6 +1,5 @@
 import React, { useContext, useReducer, useMemo, createContext } from "react";
 import { movieReducer } from "./reducer";
-import { actions } from "./actions";
 
 const MovieContext = createContext();
 
@@ -23,23 +22,10 @@ export const useMovieState = () => {
     throw new Error(`useMovieState must be a child of MovieProvider`);
   }
   const [state, dispatch] = context;
-  const setMovies = payload => dispatch({ type: actions.MOVIE, payload });
-  const setSelectedMovie = payload => {
-    dispatch({ type: actions.SELECTED_MOVIE, payload });
-  };
-  const setMovieLoading = payload => {
-    dispatch({ type: actions.MOVIE_LOADING, payload });
-  };
-  const setMovieError = payload => {
-    dispatch({ type: actions.MOVIE_ERROR, payload });
-  };
 
   return {
     state,
-    setMovieLoading,
-    setMovieError,
-    setMovies,
-    setSelectedMovie
+    dispatch
   };
 };
 

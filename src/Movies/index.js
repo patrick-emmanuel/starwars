@@ -10,22 +10,16 @@ import {
   cacheValues
 } from "../utils";
 import { useMovieState } from "./store";
+import { actions } from "./actions";
 
 const Movies = () => {
-  const {
-    state,
-    setMovies,
-    setSelectedMovie,
-    setMovieLoading,
-    setMovieError
-  } = useMovieState();
-
+  const { state, dispatch } = useMovieState();
   const { movieLoading, movieError, movies, selectedMovie } = state;
 
   const handleChange = e => {
     e.preventDefault();
     const index = e.target.value;
-    setSelectedMovie(movies[index]);
+    dispatch({ type: actions.SELECTED_MOVIE, payload: movies[index] });
   };
 
   useEffect(() => {
@@ -33,27 +27,27 @@ const Movies = () => {
       const key = "movies";
       const cachedMovies = retrieveCacheValues(key);
       if (cachedMovies) {
-        setMovies(cachedMovies);
+        dispatch({ type: actions.SET_MOVIES, payload: cachedMovies });
         return;
       }
       let movies = [];
       try {
-        setMovieLoading(true);
-        setMovieError("");
+        dispatch({ type: actions.MOVIE_LOADING, payload: true });
+        dispatch({ type: actions.MOVIE_ERROR, payload: "" });
         const response = await axios.get(`${baseUrl}/films`);
         movies = response.data.results.sort((a, b) =>
           sortFunctionAsc(a, b, "release_date")
         );
-        setMovieLoading(false);
+        dispatch({ type: actions.MOVIE_LOADING, payload: false });
       } catch (error) {
-        setMovieError(error.message);
-        setMovieLoading(false);
+        dispatch({ type: actions.MOVIE_ERROR, payload: error.message });
+        dispatch({ type: actions.LOADING, payload: false });
       }
       cacheValues(key, movies);
-      setMovies(movies);
+      dispatch({ type: actions.SET_MOVIES, payload: movies });
     };
     fetchMovies();
-  }, []);
+  }, [dispatch]);
 
   if (movieError) {
     return <p style={{ color: "white" }}>{movieError}</p>;

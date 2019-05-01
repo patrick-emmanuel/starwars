@@ -2,7 +2,7 @@ import { actions } from "./actions";
 
 export const movieReducer = (state, action) => {
   switch (action.type) {
-    case actions.MOVIE:
+    case actions.SET_MOVIES:
       return { ...state, movies: action.payload, loading: false };
     case actions.SELECTED_MOVIE:
       return { ...state, selectedMovie: action.payload, loading: false };
