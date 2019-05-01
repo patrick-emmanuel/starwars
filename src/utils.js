@@ -85,3 +85,12 @@ export const formatGender = gender => {
   }
   return gender;
 };
+
+export const cacheValues = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
+export const retrieveCacheValues = key => {
+  const value = JSON.parse(localStorage.getItem(key));
+  return value;
+};

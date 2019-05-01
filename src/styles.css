@@ -54,6 +54,7 @@ select {
   font-weight: 800;
   margin-bottom: 25px;
   text-align: center;
+  transition: all 1s;
 }
 th {
   cursor: pointer;

@@ -1,7 +1,7 @@
 import React from "react";
 import { sumCharacterHeights } from "../utils";
 
-const MovieTableFooter = ({ characters }) => {
+const CharacterTableFooter = ({ characters }) => {
   const heightSum = sumCharacterHeights(characters);
   return (
     <tfoot>
@@ -17,4 +17,4 @@ const MovieTableFooter = ({ characters }) => {
     </tfoot>
   );
 };
-export default MovieTableFooter;
+export default CharacterTableFooter;
